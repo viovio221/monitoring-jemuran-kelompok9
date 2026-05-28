@@ -8,10 +8,19 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
+
+// folder public
 app.use(express.static('public'));
 
-const PORT = 3000;
+// PORT Railway
+const PORT = process.env.PORT || 3000;
 
+// TEST ROUTE
+app.get('/', (req, res) => {
+    res.send('Backend Railway berhasil jalan');
+});
+
+// INSERT DATA CUACA
 app.post('/api/cuaca', (req, res) => {
 
     const status = req.body.status_cuaca;
@@ -44,10 +53,12 @@ app.post('/api/cuaca', (req, res) => {
     db.query(sql, [status, kondisi, warna], (err, result) => {
 
         if (err) {
+
             console.log(err);
 
             res.json({
-                success: false
+                success: false,
+                error: err
             });
 
         } else {
@@ -59,6 +70,7 @@ app.post('/api/cuaca', (req, res) => {
     });
 });
 
+// DATA TERBARU
 app.get('/api/cuaca-terbaru', (req, res) => {
 
     const sql = `
@@ -77,7 +89,7 @@ app.get('/api/cuaca-terbaru', (req, res) => {
     });
 });
 
-
+// RIWAYAT
 app.get('/api/riwayat', (req, res) => {
 
     const sql = `
@@ -94,11 +106,8 @@ app.get('/api/riwayat', (req, res) => {
         }
     });
 });
-app.use(express.static('public'));
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/frontend/index.html');
-});
+// JALANKAN SERVER
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
